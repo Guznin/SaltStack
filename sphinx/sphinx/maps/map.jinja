@@ -1,0 +1,12 @@
+{% load_yaml as sphinx %}
+default:
+  pkgs:
+    - libiodbc
+    - unixODBC
+    - postgresql-libs
+    - mariadb
+    - psmisc
+  rpm_file: 'http://sphinxsearch.com/files/sphinx-2.2.11-1.rhel7.x86_64.rpm'
+{% endload %}
+
+{% set sphinx = salt['grains.filter_by'](sphinx, base='default', grain='os_family', merge=salt['pillar.get']('sphinx')) %}

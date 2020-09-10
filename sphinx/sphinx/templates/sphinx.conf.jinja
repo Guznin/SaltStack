@@ -1,0 +1,92 @@
+{# /etc/sphinxsearch/sphinx.conf #}
+{% set sphinx = salt['pillar.get']('sphinx') %}
+indexer
+{
+  mem_limit = {{ sphinx.indexer.mem_limit }}
+}
+
+searchd
+{
+  max_packet_size = {{ sphinx.searchd.max_packet_size}}
+  listen = 0.0.0.0:9313 
+  listen = 0.0.0.0:9306:mysql41 
+  log = /var/log/sphinxsearch/searchd.log
+  #query_log_format = sphinxql
+  #query_log = /opt/sphinx/searchd.query.log
+  pid_file = /var/run/sphinx/searchd.pid
+  dist_threads = {{ sphinx.searchd.dist_threads }}
+  workers = threads
+  binlog_path = # disable logging
+}
+
+source db-name_core
+{
+  type = mysql
+  sql_host = {{ sphinx.mysql.sql_host }}
+  sql_user = {{ sphinx.mysql.sql_user }}
+  sql_pass = {{ sphinx.mysql.sql_password }}
+****
+
+YOUR CONFIG
+
+****
+}
+
+#this index is fake  we will merge delta with if all the time
+source index-name_core_delta
+{
+  type = mysql
+  sql_host = {{ sphinx.mysql.sql_host }}
+  sql_user = {{ sphinx.mysql.sql_user }}
+  sql_pass = {{ sphinx.mysql.sql_password }}
+
+****
+
+YOUR CONFIG
+
+****
+
+}
+
+
+index index-name_core
+{
+****
+
+YOUR CONFIG
+
+****
+}
+
+
+
+source index-name_core_{{ sphinx.index_parameters.partition }} : index-name_core
+{
+ sql_db = {{ sphinx.index_parameters.database }}
+}
+
+source index-name_core_{{ sphinx.index_parameters.partition }}_delta : index-name_core_delta
+{
+ sql_db = {{ sphinx.index_parameters.database }}
+}
+
+index index-name_core_{{ sphinx.index_parameters.partition }} : index-name_core
+{
+  source = index-name_core_{{ sphinx.index_parameters.partition }}
+  path = /opt/sphinx/index-name_core_{{ sphinx.index_parameters.partition }}
+}
+
+index index-name_core_{{ sphinx.index_parameters.partition }}_delta : index-name_core_delta
+{
+  source = index-name_core_{{ sphinx.index_parameters.partition }}_delta
+  path = /opt/sphinx/index-name_core_{{ sphinx.index_parameters.partition }}_delta
+}
+
+
+index index-name
+{
+  type = distributed
+  local = index-name_core_{{ sphinx.index_parameters.partition }}
+  local = index-name_core_{{ sphinx.index_parameters.partition }}_delta
+
+}

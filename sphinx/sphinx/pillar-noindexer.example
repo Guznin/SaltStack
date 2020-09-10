@@ -1,0 +1,16 @@
+formulas:
+- sphinx
+
+sphinx:
+  indexer:
+    mem_limit: '2047M'
+  searchd:
+    dist_threads: {{ grains['num_cpus'] }}
+    max_packet_size: '31M'
+  index_parameters:
+    partition: 1
+    database: 'mydb'
+  mysql:
+    sql_host: '127.0.0.1'
+    sql_user: {{ user }}
+    sql_password: {{ password }}

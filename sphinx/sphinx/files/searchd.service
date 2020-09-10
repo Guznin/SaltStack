@@ -1,0 +1,26 @@
+[Unit]
+Description=SphinxSearch Search Engine
+After=network.target remote-fs.target nss-lookup.target
+After=syslog.target
+
+[Service]
+User=sphinx
+Group=sphinx
+RuntimeDirectory=sphinxsearch
+RuntimeDirectoryMode=0775
+ExecStart=/usr/bin/searchd --config /etc/sphinx/sphinx.conf
+ExecStop=/usr/bin/searchd --config /etc/sphinx/sphinx.conf --stopwait
+KillMode=process
+KillSignal=SIGTERM
+SendSIGKILL=no
+LimitNOFILE=infinity
+TimeoutStartSec=infinity
+PIDFile=/var/run/sphinx/searchd.pid
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
+Alias=sphinx.service
+Alias=sphinxsearch.service
+Alias=searchd.service
