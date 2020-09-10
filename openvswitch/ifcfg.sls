@@ -6,6 +6,6 @@
         - contents: |
             # Managed by Salt!
         {%- for k, v in iface|dictsort %}
-            {{k|upper}}="{{v}}"
+            {{ k|upper }}="{{ v }}"
         {%- endfor %}
 {%- endfor %}
