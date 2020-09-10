@@ -1,0 +1,29 @@
+<!-- Managed by Salt -->
+
+<!--
+WARNING: THIS IS AN AUTO-GENERATED FILE. CHANGES TO IT ARE LIKELY TO BE
+OVERWRITTEN AND LOST. Changes to this xml configuration should be made using:
+  virsh net-edit ovs-network
+or other application using the libvirt API.
+<tag id='200'/>
+-->
+
+<network>
+  <name>ovs-network</name>
+  <forward mode='bridge'/>
+  <bridge name='ovs-br0'/>
+  <virtualport type='openvswitch'/>
+  <portgroup name='internal-vlan-99'>
+  </portgroup>
+  <portgroup name='internal-vlan-13' default='yes'>
+    <vlan>
+      <tag id='200'/>
+    </vlan>
+  </portgroup>
+  <portgroup name='trunkPortGroup'>
+    <vlan trunk='yes'>
+      <tag id='99'/>
+      <tag id='13'/>
+    </vlan>
+  </portgroup>
+</network>

@@ -1,0 +1,18 @@
+{% load_yaml as default_settings %}
+default:
+    pkgs:
+        - qemu-kvm
+        - libvirt
+        - libvirt-python
+        - libguestfs-tools
+        - virt-install
+    services:
+        - libvirtd
+        - libvirt-guests
+    tmp_dir: /tmp
+    network_dir: /etc/libvirt/qemu/networks
+    {# create network for ovs switch #}
+    network_name: ovs-network
+{% endload %}
+
+{% set libvirt = salt['grains.filter_by'](default_settings, base='default', grain='os_family', merge=salt['pillar.get']('libvirt')) %}
