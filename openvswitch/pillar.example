@@ -1,0 +1,39 @@
+openvswitch:
+  network:
+    ifaces:
+      - name: em1
+        device: em1
+        bootproto: 'none'
+        nm_controlled: 'no'
+        ipv6init: 'no'
+        onboot: 'yes'
+
+      - name: em2
+        device: em2
+        bootproto: 'none'
+        nm_controlled: 'no'
+        ipv6init: 'no'
+        onboot: 'yes'
+# Create em1 and em2 ifaces bond 
+      - name: bond0
+        device: bond0
+        type: OVSBond
+        devicetype: ovs
+        onboot: 'yes'
+        ovs_bridge: ovs-br0
+        bootproto: 'none'
+        bond_ifaces: 'em1 em2'
+        ovs_options: 'bond_mode=balance-tcp lacp=active other_config:lacp-time=fast other_config:lacp-fallback-ab=true'
+        delay: 0
+
+      - name: ovs-br0
+        device: ovs-br0
+        ipaddr: '192.168.1.12'
+        netmask: '255.255.255.0'
+        gateway: '192.168.1.1'
+        type: OVSBridge
+        nm_controlled: 'no'
+        defroute: 'yes'
+        bootproto: 'static'
+        ipv6init: 'no'
+        onboot: 'yes'

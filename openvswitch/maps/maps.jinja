@@ -1,0 +1,12 @@
+{% load_yaml as default_settings %}
+default:
+    pkgs: 
+        - openvswitch
+    services:
+        - openvswitch.service
+        - ovsdb-server
+        - ovs-delete-transient-ports
+        - ovs-vswitchd
+{% endload %}
+
+{% set openvswitch = salt['grains.filter_by'](default_settings, base='default', grain='os_family', merge=salt['pillar.get']('openvswitch')) %}
